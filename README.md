@@ -4,10 +4,10 @@ Rails Model practise:
 I will try to practise all of the association used in my work and use some good recipse I learnt from books like
 "Anti Pattern", "Rails Recipes". 
 
- - has_many through VS has_and_belongs_to_many: used on Subscription, Reader and Magzine Models
+- has_many through VS has_and_belongs_to_many: used on Subscription, Reader and Magzine Models
  
-   Sometimes we need a join model which has its own attributes. and then we can also add some callback, validations on it. 
-   Also, we can build an easy accessor 
+  Sometimes we need a join model which has its own attributes. and then we can also add some callback, validations on it. 
+  Also, we can build an easy accessor 
    
    		class Subscription < ActiveRecord::Base
   			belongs_to :reader
@@ -24,11 +24,11 @@ I will try to practise all of the association used in my work and use some good 
   			has_many :readers, through: :subscriptions
 		end
 	
-	- Named scope, used on Subscription Model
+- Named scope, used on Subscription Model
 	
-	It's a good way as the macro-style class methods: 
+  It's a good way as the macro-style class methods: 
 	
-	Usually we don't use the queries in the controllers, we can define named scopes in the model:
+  Usually we don't use the queries in the controllers, we can define named scopes in the model:
 	
 		scope :annual_subscriptions, ->{ where length_in_issues: 12 }
 	
@@ -40,7 +40,7 @@ I will try to practise all of the association used in my work and use some good 
  		last_renewal_on: "2015-09-17", length_in_issues: 12, reader_id: nil, magzine_id: nil, created_at: "2015-09-26 04:42:41", 
  		updated_at: "2015-09-26 04:42:41">]> 
  	
- 	with argument:
+ with argument:
  	 
  		scope :subscribed_before, ->(time) { where 'last_renewal_on < ? ', time }
  		
@@ -51,7 +51,7 @@ I will try to practise all of the association used in my work and use some good 
  		last_renewal_on: "2015-09-17", length_in_issues: 12, reader_id: nil, magzine_id: nil, created_at: "2015-09-25 18:42:41", 
  		updated_at: "2015-09-25 18:42:41">]> 
  		
- 	- use default_scope(), used on Magzine Model
+- use default_scope(), used on Magzine Model
  	
  		Magzine.all
   		Magzine Load (0.5ms)  SELECT "magzines".* FROM "magzines"
@@ -66,10 +66,10 @@ I will try to practise all of the association used in my work and use some good 
   		Magzine Load (0.4ms)  SELECT "magzines".* FROM "magzines" WHERE "magzines"."published" = ?  [["published", "t"]]
  		=> #<ActiveRecord::Relation []> 
  		
- 	- About collection proxy: used on Magzine Model
+- About collection proxy: used on Magzine Model
  	
- 	collection proxy is a wrappers around the collections, allowing them to be lazily loaded and extended. 
- 	We can add behaviors on the collection proxy like this: 
+  collection proxy is a wrappers around the collections, allowing them to be lazily loaded and extended. 
+  We can add behaviors on the collection proxy like this: 
 	 	
 	 	by passing a block to the declaration of the has_many() association: 
 	 	
@@ -86,13 +86,13 @@ I will try to practise all of the association used in my work and use some good 
 	 		=> #<ActiveRecord::AssociationRelation [#<Reader id: 1, name: "jane", created_at: "2015-09-25 18:16:05", 
 	 		updated_at: "2015-09-26 05:44:47", age: 25>]> 
  		
- 		Or we can create a module(put it under the concerns) and then we extend it like:
+ Or we can create a module(put it under the concerns) and then we extend it like:
  		
  			has_many :readers, through: :subscriptions, extend: ReaderFinder
  		
  		we use it the same way
  		
- 	- Polymorphic Associations,  used on Address, Person and Company Models
+- Polymorphic Associations,  used on Address, Person and Company Models
  	
  			class Address < ActiveRecord::Base
   				belongs_to :addressable, polymorphic: true
@@ -109,7 +109,7 @@ I will try to practise all of the association used in my work and use some good 
   				has_many :addresses, as: :addressable
 			end
  		
-			2 columns have been added: addressable_id and addressable_type
+	2 columns have been added: addressable_id and addressable_type
 			
 			Address.all
   			Address Load (0.3ms)  SELECT "addresses".* FROM "addresses"
@@ -120,14 +120,14 @@ I will try to practise all of the association used in my work and use some good 
  			 postcode: "3000", addressable_id: 1, addressable_type: "Company", created_at: "2015-09-26 06:11:54", 
  			 updated_at: "2015-09-26 06:11:54">]>
  	
- 	- use paper-trail to track changes to our models: used on Chapter Model
+- use paper-trail to track changes to our models: used on Chapter Model
  	
- 	This is useful when we have to correct our mistakes we made on the data. or Sometimes users need to be able to compare two versions 
- 	of a piece of data to see what has changed.
+  This is useful when we have to correct our mistakes we made on the data. or Sometimes users need to be able to compare two versions 
+  of a piece of data to see what has changed.
  	
- 	after installing the gem and applied to our model, now can we use the methods privided: 
+  after installing the gem and applied to our model, now can we use the methods privided: 
  			
- 	actually this gem created a table called 'versions' to maintain the tracks/versions: 
+  actually this gem created a table called 'versions' to maintain the tracks/versions: 
  			
  			Chapter.create(title: "legacy", body: "wonderful history")
    			(0.1ms)  begin transaction
@@ -144,5 +144,7 @@ I will try to practise all of the association used in my work and use some good 
  			#<PaperTrail::Version id: 2, item_type: "Chapter", item_id: 1, event: "update", whodunnit: nil, 
  			object: "---\nid: 1\ntitle: legacy\nbody: wonderful history\ncr...", created_at: "2015-09-26 06:34:26">]>
  			
- 	- 
+ 			
+ - ActiveRecord::Calculations:
+ 	
    
